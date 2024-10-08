@@ -1,0 +1,35 @@
+Mercury will be a project focused on creating a shell.
+
+What the program needs to do:
+-Read user input.
+-Parse user input for commands.
+-Execute the input commands.
+
+Reading:
+-We will read in input using fgets() or getline()
+-Clean up the input
+
+Parsing:
+-Use a delimiter to split the input into an array of strings.
+-Use strtok() to tokenize strings with spaces being our delimiter.
+
+Execution:
+-Create a child process using fork().
+-Use execvp() to run the command, display an error if it cannot be run.
+-The shell should wait for the command to be executed with wait().
+
+Built-in commands:
+-Change directory with chdir()
+-Call exit() to terminate shell.
+------------------------------------------------------------------------
+
+Issues:
+
+1. readInput - Input past 6 characters begin to behave oddly.
+It wouldn't read the 7th character, and anything beyond would be put into new lines (new buffers?).
+PROBLEM - My fgets call was incorrect. fgets(buffer, sizeof(buffer), stdin). This meant I was only
+allocating 8 bytes (the size of a pointer variable) to my input, hence why the 7th character misbehaved.
+SOLUTION - I added a new size_t argument to the function, and the shellLoop passes the actual space to the function.
+Now the fgets is: fgets(buffer, bufferSize, stdin) - Which properly allocates the correct amount of space.
+
+

@@ -1,0 +1,27 @@
+These are notes relating to functions and such.
+
+Function Pointers:
+A pointer points to the memory location of a value. 
+A function pointer points to the memory location of code.
+For my shell (Mercury) I wanted an easily accessible, fast, and modifiable way to invoke commands.
+To accomplish these I am using function pointers, and an array of Commands (struct) to do this.
+I also implemented an enum type of system commands, these contain the "codes" to invoke the commands.
+I did this because I think this will be much better later on, and will be much more modifiable.
+My Command struct has two values; an system_calls_t for one of the enum values, and a pointer to the function.
+To access the system's commands I made an array of commands to be called. This was set to static and constant.
+It's static so it's initialized and stored before any stack calls are done, so it exists essentially outside memory.
+It's constant so nothing can accidentally call and modify the array.
+
+Powerful Functions:
+A function should accomplish a lot individually, with very little outside calls to other functions.
+An example of this can be seen in the Saab Gripen aircraft - with an air control software that runs
+one main loop with several powerful functions, all accomplishming many duties during their calls with
+very little outside function calls.
+https://news.ycombinator.com/item?id=8374606
+
+High Cohesion Low Coupling:
+A function should have a clearly-defined and scoped purpose.
+For example: We have a function translateFile()
+translateFile serves as a simple a modular way to call several processes.
+It may begin with calling readFile(), then parseFile(), then calls to translateLine for every line in the file.
+This is a rudimentary example, but essentially we want specilization in our function purposes.

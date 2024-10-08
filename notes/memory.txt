@@ -1,3 +1,4 @@
+//jfr
 //These are some notes taken about memory management in C programming.
 //Notes are taken from Eskil Steenberg's video "How I program C"
 
