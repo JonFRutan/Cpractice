@@ -19,20 +19,27 @@ int main() {
     int line_count = count_lines(file);
     line *lines = malloc(line_count * sizeof(line));
     parse_file(file, line_count, lines);
+    //remove this section
+    for (int i=0; i<line_count; i++) {
+        printf("%s", lines[i].string);
+    }
+    //FIXME
+    //remove this section - Printed some unexpected characters then printed a NULL for every line.
     fclose(file);
     free(lines);
 }
 
+//"dry run" of the file to count how many lines will be needed for mallocation.
 int count_lines (FILE *file) {
     int line_count = 0;
-    char buffer[50];
+    char buffer[50];               //Following with the arbitrary input cap.
     while (fgets(buffer, sizeof(buffer), file)) {
         line_count++;
     }
     return line_count;
 }
 
-//reads in lines from the file.
+//Reads in the lines from the file, then assigns every line to a 'line' object.
 void parse_file(FILE *file, int line_count, line *lines) {
     char line_content[50];         //Each line is arbitrarily capped at 50 characters.
     int current_line = 0;
@@ -44,7 +51,6 @@ void parse_file(FILE *file, int line_count, line *lines) {
 }
 
 //converts every character into their representative ascii value, totals it, then returns the value.
-//O(n)
 unsigned int get_line_value(char *line) {
     unsigned int length = strlen(line);
     unsigned int line_value = 0;
