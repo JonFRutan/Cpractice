@@ -17,6 +17,7 @@ int main() {
         return 1;
     }
     int line_count = count_lines(file);
+    rewind(file);                                       //resets the file pointer
     line *lines = malloc(line_count * sizeof(line));
     parse_file(file, line_count, lines);
     //remove this section
@@ -43,9 +44,9 @@ int count_lines (FILE *file) {
 void parse_file(FILE *file, int line_count, line *lines) {
     char line_content[50];         //Each line is arbitrarily capped at 50 characters.
     int current_line = 0;
-    while (fgets(line_content, sizeof(line_content), file)) {
+    while (fgets(line_content, sizeof(line_content), file) && current_line < line_count) {
         lines[current_line].ascii_value = get_line_value(line_content);
-        lines[current_line].string = line_content;
+        strcpy(lines[current_line].string, line_content);
         current_line++;
     }
 }
