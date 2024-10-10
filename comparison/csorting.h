@@ -2,6 +2,7 @@
 #ifndef CSORTING_H
 #define CSORTING_H
 
+#include <time.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
