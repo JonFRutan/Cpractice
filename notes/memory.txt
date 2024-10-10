@@ -1,39 +1,38 @@
-//jfr
-//These are some notes taken about memory management in C programming.
-//Notes are taken from Eskil Steenberg's video "How I program C"
+jfr
+These are some notes taken about memory management in C programming.
+Notes are taken from Eskil Steenberg's video "How I program C"
 
 float *a;     //This is a pointer to a double.
 a = malloc(sizeof(float)); //In general, we would use this to allocate the size of a float.
 //OR
 a = malloc((sizeof *a)); //This is more versatile, as instead of using the literal type in our sizeof call, we can now change 'a' if needed and this will still work.
 
-//A struct is a sizeof, and various offsets.
-//When compiled, structs lose their names and simply become data values in a range of memory.
+A struct is a sizeof, and various offsets.
+When compiled, structs lose their names and simply become data values in a range of memory.
 typedef struct {
     uint type;
     char name[32];
     float size;
 }MyStructType;
-//Here let's say we wanted to find how far into our struct the 'size' field is.
+Here let's say we wanted to find how far into our struct the 'size' field is.
 offset = (uint)(&((MyStructType *)NULL)->size);
-//'offset' is how far into our struct the size field is.
-//What we are doing here, is initializing a pointer to our struct to NULL, or the beginning of the allocated memory.
-//With '->size' we are derefrencing the size field out of the pointer.
-//We then use the '&' to tell the program we want the memory address of this field.
-//Finally, we cast it into an unsigned integer to give us the offset value of the field in memory.
+'offset' is how far into our struct the size field is.
+What we are doing here, is initializing a pointer to our struct to NULL, or the beginning of the allocated memory.
+With '->size' we are derefrencing the size field out of the pointer.
+We then use the '&' to tell the program we want the memory address of this field.
+Finally, we cast it into an unsigned integer to give us the offset value of the field in memory.
 
-
-//Alignment
-//What is alignment? - In C data size likes to be on an factor of its sized address. 
-//For example:
+Alignment
+What is alignment? - In C data size likes to be on an factor of its sized address. 
+For example:
 typedef struct {
     uint8 a;  //1 byte
     utin32 b; //4 bytes
 }MyStructType;
-//So 5 bytes right? Not really, this is how the data is actually laid out: a***bbbb
-//Since 'a' only takes 1 byte, it fills in it's byte, then is empty for another 3. Then our 32 bit 'b' fills in it's 4 on the 5-9 indexes.
-//Alignment is the prioritization of data to align on a factor of it's needed space. 4 bytes wants to be at index 0, or 4, or 8, or 12, etc.
-//Why does this matter? Because we can take advantage of this empty space instead of just wasting it.
+So 5 bytes right? Not really, this is how the data is actually laid out: a***bbbb
+Since 'a' only takes 1 byte, it fills in it's byte, then is empty for another 3. Then our 32 bit 'b' fills in it's 4 on the 5-9 indexes.
+Alignment is the prioritization of data to align on a factor of it's needed space. 4 bytes wants to be at index 0, or 4, or 8, or 12, etc.
+Why does this matter? Because we can take advantage of this empty space instead of just wasting it.
 typedef struct {
     uint8 a;   //1 byte
     uint8 x;   //1 byte
@@ -41,26 +40,100 @@ typedef struct {
     uint8 z;   //1 byte
     uint32 b;  //4 bytes
 }MyProperStructType;
-//8 bytes right? Yes. Not the data is laid out as such: axyzbbbb
-//It takes up the same amount of bytes as our other struct, but properly fills in and provides more values to be used, thus not wasting memory.
-//HOWEVER - The ordering of the data values matters. For example:
+8 bytes right? Yes. Not the data is laid out as such: axyzbbbb
+It takes up the same amount of bytes as our other struct, but properly fills in and provides more values to be used, thus not wasting memory.
+HOWEVER - The ordering of the data values matters. For example:
 typedef struct {
     uint32 b; //4 bytes
     uint8 a;  //1 byte
 }MyImproperStructType;
-// bbbba*** - Why does it still pad? Because generally we aren't just allocating space for 1 struct, but multiple.
-// Allocating even 2 would yield: bbbba***bbbba*** - This is because the data still seeks alignment when allocating all the space.
-// Meaning that our 4 bytes is still always looking for a factor of 4 to start on.
-// One last example on ordering:
+bbbba*** - Why does it still pad? Because generally we aren't just allocating space for 1 struct, but multiple.
+Allocating even 2 would yield: bbbba***bbbba*** - This is because the data still seeks alignment when allocating all the space.
+Meaning that our 4 bytes is still always looking for a factor of 4 to start on.
+One last example on ordering:
 typedef struct {
     uint8 a; //1 byte
     uint32 b;//4 bytes
     uint8 z; //1 byte
 }MySillyStructType;
-// a***bbbbz*** - Horrific isn't it? Ordering within your struct matters quite a bit due to data alignment. Proper usage would be:
+a***bbbbz*** - Horrific isn't it? Ordering within your struct matters quite a bit due to data alignment. Proper usage would be:
 typedef struct {
     uint8 a;  //1 byte
     uint8 z;  //1 byte
     uint32 b; //4 bytes
 }MyFixedStructType;
-//az**bbbb - While we are still losing 2 bytes, this is far more practical than the prior struct layout since we have saved 4 bytes overall.
+az**bbbb - While we are still losing 2 bytes, this is far more practical than the prior struct layout since we have saved 4 bytes overall.
+
+Memory is slow, math is fast.
+To optimize speed and efficiency of code, we need to try and minimize memory access. 
+One of the best optimizations is memory coherence, making sure that every processor in a shared-memory system have consistent memory values.
+In general, cache coherence protocols (MESI or MOESI) are used to ensure this consistency.
+
+Here are two examples, one is memory coherent the other is not.
+//Not coherent
+for (l=list; l != NULLl l ->next)
+    function(l);
+
+//coherent
+for (i=0; i<array_length; i++)
+    function(array[i]);
+
+LinkedLists in general are memory inefficient, resulting in poor spatial locality, and thus more cache misses.
+Arrays on the other hand are textbook spatially local, we know that in general we iterate through arrays so allocating them into the cache is very easy.
+
+typedef struct {
+    void *data;
+    void *next:
+} LinkedList;
+Here is a generic LinkedList, 
+
+Realloc is super great when dealing with arrays:
+if (array_length == array_allocated) {
+    array_allocated *= 2; //OR  += 16; or any sort of increment, the larger the incremenent, the less calls to realloc. 
+    array = realloc(array, (sizeof *array) * array_allocated);
+}
+array[array_length] = value;
+array_length++;
+
+To remove:
+array[i] = array[--array_length];
+What if we want to keep our element in the same place? We will backwards remove, which is still faster than using a LinkedList.
+
+for (i = array_length; i != 0;) {
+    i--;
+    if (array[i] == removed_index)    //Is this the one I want to remove?
+        break;                        //If yes, we're done.
+    last = save;                      //If not - Save the one we're at.
+    save = array[i];                  //Override it with the prior one
+    array[i] = last;
+}
+
+Remember- MATH IS FAST.
+
+typedef struct {
+    float width;
+    float length;
+    float area;
+}Rectangle;
+
+Seem's reasonable, however we can optimize this quite easily.
+
+typedef struct {
+    float width;
+    float length;
+}Rectangle;
+
+Instead when we need area, we'll just compute it here. The computation in this case is faster than storing the area value and reading it.
+However this is a very simple example and is not applicable to some advanced calculations that may be a lot more intensive.
+In cases like that it is simpler to store the calculated value over running some complex algorithm again.
+
+There is another way we can store this in such a manner to minimize issues:
+
+typedef void Rectangle;
+void my_rectangle_width_set(Rectangle *rectangle, float width);
+float my_rectangle_width_get(Rectangle *rectangle);
+void my_rectangle_length_set(Rectangle *rectangle, float length);
+float my_rectangle_length_get(Rectangle *rectangle);
+float my_rectangle_area_get(Rectangle *rectangle);
+
+This is another way of constructing our struct that we never have to worry about area not being updated as a result of changes to width or length.
