@@ -21,11 +21,12 @@ int main() {
     line *lines = malloc(line_count * sizeof(line));
     parse_file(file, line_count, lines);
     //remove this section
+    printf("File lines: \n");
     for (int i=0; i<line_count; i++) {
         printf("%s", lines[i].string);
     }
-    //FIXME
-    //remove this section - Printed some unexpected characters then printed a NULL for every line.
+    //remove this section
+    printf("Sorting...\n");
     fclose(file);
     free(lines);
 }
