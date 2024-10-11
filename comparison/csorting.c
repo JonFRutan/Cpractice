@@ -20,22 +20,25 @@ int main() {
     rewind(file);                                       //resets the file pointer
     line *lines = malloc(line_count * sizeof(line));
     parse_file(file, line_count, lines);
-    //remove this section
-    printf("File lines: \n");
+
     for (int i=0; i<line_count; i++) {
-        printf("Line %d: %s",i, lines[i].string);
+        printf("%s", lines[i].string);
     }
-    //remove this section
-    printf("\nSorting...\n");
+
+    sort_lines(lines, line_count);
+
+    for (int i=0; i<line_count; i++) {
+        printf("%s", lines[i].string);
+    }
+
     fclose(file);
     free(lines);
-    return 0;
 }
 
 //"dry run" of the file to count how many lines will be needed for mallocation.
 int count_lines (FILE *file) {
     int line_count = 0;
-    char buffer[51];               //Following with the arbitrary input cap.
+    char buffer[50];               //Following with the arbitrary input cap.
     while (fgets(buffer, sizeof(buffer), file)) {
         line_count++;
     }
@@ -44,7 +47,7 @@ int count_lines (FILE *file) {
 
 //Reads in the lines from the file, then assigns every line to a 'line' object.
 void parse_file(FILE *file, int line_count, line *lines) {
-    char line_content[51];         //Each line is arbitrarily capped at 51 characters.
+    char line_content[50];         //Each line is arbitrarily capped at 50 characters.
     int current_line = 0;
     while (fgets(line_content, sizeof(line_content), file) && current_line < line_count) {
         lines[current_line].ascii_value = get_line_value(line_content);
@@ -61,4 +64,45 @@ unsigned int get_line_value(char *line) {
         line_value += (int)line[i];
     }  
     return line_value; 
+}
+
+void sort_lines(line *lines, int line_count) {
+    printf("\nWhich sorting algorithm would you like to use?\n");
+    printf("NOTE: Invalid input will result in quicksort default.\n");
+    printf("Insertion (i) | Quick (q)\n");
+    char sort_choice;
+    scanf("%c", &sort_choice);
+    if (sort_choice == '\0') {
+        printf("An error has occurred...");
+        return;
+    }
+    else if (sort_choice == 'i') {
+        printf("\nStarting Insertion Sort...\n");
+        insertion_sort(lines, line_count);
+        return;
+    }
+    else if (sort_choice == 'q') {
+        printf("\nStarting Quick Sort...\n"); 
+        quick_sort(lines, line_count);
+        return;
+    }
+    return;
+}
+
+void quick_sort(line *lines, int n) {
+    return;
+}
+
+//This sort currently doesn't work.
+void insertion_sort(line *lines, int n) {
+    for (int i=1; i<n; ++i) {
+        int comparison = lines[i].ascii_value;
+        int j = i - 1;
+
+        while (j >= 0 && lines[j].ascii_value > comparison) {
+            lines[j+1]= lines[j];
+            j = j-1;
+        }
+        lines[j+1].ascii_value = comparison;
+    }
 }

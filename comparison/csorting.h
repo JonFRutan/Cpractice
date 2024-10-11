@@ -17,6 +17,8 @@ typedef struct {
 void parse_file(FILE *file, int line_count, line *lines);
 unsigned int get_line_value(char *line);
 int count_lines (FILE *file);
-
+void sort_lines(line *lines, int line_count);
+void quick_sort(line *lines, int n);
+void insertion_sort(line *lines, int n);
 
 #endif
