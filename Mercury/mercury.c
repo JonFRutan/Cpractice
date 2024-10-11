@@ -17,6 +17,7 @@ void shellLoop() {
         printf("%d", status);
         printf("\n");
     }
+    return 0;
 }
 
 // Reads input into the buffer. Initially the arguments were just char* buffer, however I added

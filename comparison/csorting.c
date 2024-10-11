@@ -23,18 +23,19 @@ int main() {
     //remove this section
     printf("File lines: \n");
     for (int i=0; i<line_count; i++) {
-        printf("%s", lines[i].string);
+        printf("Line %d: %s",i, lines[i].string);
     }
     //remove this section
-    printf("Sorting...\n");
+    printf("\nSorting...\n");
     fclose(file);
     free(lines);
+    return 0;
 }
 
 //"dry run" of the file to count how many lines will be needed for mallocation.
 int count_lines (FILE *file) {
     int line_count = 0;
-    char buffer[50];               //Following with the arbitrary input cap.
+    char buffer[51];               //Following with the arbitrary input cap.
     while (fgets(buffer, sizeof(buffer), file)) {
         line_count++;
     }
@@ -43,7 +44,7 @@ int count_lines (FILE *file) {
 
 //Reads in the lines from the file, then assigns every line to a 'line' object.
 void parse_file(FILE *file, int line_count, line *lines) {
-    char line_content[50];         //Each line is arbitrarily capped at 50 characters.
+    char line_content[51];         //Each line is arbitrarily capped at 51 characters.
     int current_line = 0;
     while (fgets(line_content, sizeof(line_content), file) && current_line < line_count) {
         lines[current_line].ascii_value = get_line_value(line_content);
