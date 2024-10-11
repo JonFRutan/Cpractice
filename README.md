@@ -11,3 +11,5 @@ Venus - nothing yet.
 -Install SFML - import Rust pendulum form elsuizo.  
 -C pendulum?  
 -'pixels' should implement a quadtree for collision comparison.  
+-Fix/implement 'comparison' sorts.
+-Add the timer to 'comparison'
