@@ -4,3 +4,8 @@ comparison - file input/output, will do sorting and comparison of CPU clock cycl
 notes - notes relating to various things.
 Mercury - basic shell.
 Venus - nothing yet.
+
+To-do: 
+-Package 'pixels' with SDL2?
+-Install SFML - import Rust pendulum form elsuizo.
+-C pendulum?
