@@ -10,3 +10,4 @@ Venus - nothing yet.
 -Package 'pixels' with SDL2?  
 -Install SFML - import Rust pendulum form elsuizo.  
 -C pendulum?  
+-'pixels' should implement a quadtree for collision comparison.  
