@@ -137,3 +137,39 @@ float my_rectangle_length_get(Rectangle *rectangle);
 float my_rectangle_area_get(Rectangle *rectangle);
 
 This is another way of constructing our struct that we never have to worry about area not being updated as a result of changes to width or length.
+
+We can also minimize mallocs when defining a struct:
+
+typedef struct {
+    uint length;
+    uint8 data[];
+}MyArray;
+By not providing a size to the data array, this allows us to instantiate it as such:
+MyArray *array;
+array = malloc((sizeof *array) + sizeof(uint8) * (length));
+array->length = length;
+If we want to add other pieces to our struct, we need to make sure they are instanitated BEFORE the empty array.
+
+Here's a neat trick:
+typedef struct {
+    uint64 a;
+    float b;
+}StructA;
+
+typedef struct{
+    float x;
+    uint8 y;
+    double z;
+}StructB;
+
+StructA *a;
+StructB *b;
+
+a = malloc(sizeof(StructA) + sizeof(StructA));
+b = (StructB *)&a[1];
+
+This is sketchy but potentially useful. What we are doing is allocating memory for our StructA, which in reality is the size of a StructA+StructB.
+Then we are setting the addess of the pointer b to the location in memory after the size of the StructA (&a[0] is StructA) and we cast that memory location
+to that of a StructB. This is a trick for ensuring they are sequential in memory, however this could easily fall apart depending on the machine (32 bit vs 64 bit).
+It's important for the structs to have similar alignments as well.
+

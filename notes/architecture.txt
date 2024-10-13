@@ -1,0 +1,53 @@
+Architecture
+
+Pick your primitives
+A primitive is the very basic structures or elements of your code.
+Decide on your very fundamental elements, then make more complex functionality off of that.
+
+Examples:
+
+-Messages in Network protocols
+Instead of a software handling all events as their own objects, like notifications, messages, requests, etc, we just focus on messages.
+Instead of defining and handling all of those, we can just use a basic primitive "message" in our case to handle everything.
+A "message" could consist of a header and a body, the header defining metadata and the body containing some payload that determines it's action.
+[MESSAGE] = [HEADER] + [PAYLOAD] | [HEADER] = {time_sent, sending_user, recieving_user, message_type} | [PAYLOAD] = {data}
+Here's a struct of this:
+typedef struct {
+    int message_type;
+    int senderID;
+    int recieverID;
+    char payload[256]
+} Message;
+Here we have a highly flexible "message" primitive. This way our system could focus simply on exchanging messages,
+then determine the message type and execution upon recieving it. We could in the future add new message types and 
+different ways of interpreting the payload.
+
+-Paths in vector graphics
+typedef struct {
+    int point_count;
+    Point points[];
+} Path;
+A path in definition is simply a collection of points, during a path interpretation however, we can use this to create graphics.
+A path is a collection of points connected by a line segment. For example a rectangle is a path of 4, and a circle is a path of many point (depending on level of deatail)
+So a program rendering graphics in this sense will simply break every shape down into paths, and use these paths to render objects.
+We would set it up so that to render a shape, the shape must first be divided into many sub-paths that make up the shape.
+
+Using an id for UI 
+
+main_loop() {
+    if(draw_button_add(id1, sin(time), cos(time), "hello")) {
+        printf("Pressed");
+    }
+    draw_surface(id2, x, y, size);
+}
+To have an id, we just need a pointer to anything.
+In a lot of cases there is one available:
+slider(&value, &value, x, y, size);
+In this case, a slider changes the value at address &value, we can simply use this as our "id" to ensure this is the same rendered slider.
+We can use strings as well, and malloc();
+
+uint f_randi(uint32 index) {
+    index = (index << 13) ^ index;
+    return ((index * (index * index * 15731 + 789221) + 1376312589) & 0x7fffffff)
+}
+This is (supposedly) a fantastic random number generator.
