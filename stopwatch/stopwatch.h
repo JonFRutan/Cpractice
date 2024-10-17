@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h> 
+#include <stdlib.h>
 
 void start_watch(clock_t *start);
 void stop_watch(clock_t *stop);

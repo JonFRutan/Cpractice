@@ -3,18 +3,29 @@
 static clock_t start, stop;
 static double cpu_time_elapsed;
 
-int main() {
+//main is for testing the stopwatch, calling with an argument will count based on the provided number.
+int main(int argc, char *argv[]) {
+    if (argc <= 1) {
+        printf("Not enough arguments- provide a MAX int for testing.\n");
+        return 1;
+    }
+    unsigned int count_max = atoi(argv[1]);
+    if (!count_max) {
+        printf("Provide an int > 0\n");
+        return 1;
+    }
     printf("Running stopwatch test...\n");
     start_watch(&start);
     unsigned int count = 0;
-    for (int i=0;i<TEST_TIME;i++) {
+    for (int i=0;i<count_max;i++) {
         count++;
-        printf("\r%d/%d", count, TEST_TIME);
-        fflush(stdout);
+        printf("\r%d/%d", count, count_max);       //Prints current iteration out of our max
+        fflush(stdout);                            //Flushes the programs output
     }
     printf("\n");
     stop_watch(&stop);
     print_cpu_time(get_cpu_time_elapsed());
+    printf("\n");
 }
 
 
