@@ -1,14 +1,16 @@
 #include "main.h"
 
 int main () {
+    start_timer();
     initscr();
     noecho();
     curs_set(FALSE);
-    start_color();
-    init_pair(1, COLOR_BLUE, COLOR_BLACK);
+    //start_color();
+    //init_pair(1, COLOR_BLUE, COLOR_BLACK);
     screen_main_loop();
     endwin();
-    printf("Finished.\n\n");
+    printf("Finished.\n");
+    stop_timer();
 }
 
 int screen_main_loop() {
@@ -38,34 +40,28 @@ int screen_main_loop() {
     return 0;
 }
 
-void initialize_frame (char frame[RENDER_HEIGHT][RENDER_WIDTH]) {
-    for (int i=0;i<RENDER_HEIGHT; i++) {
-        for (int j=0;j<RENDER_WIDTH;j++) {
-            frame[i][j] = '-';
-        }
-    }
-}
+// void initialize_frame (char frame[RENDER_HEIGHT][RENDER_WIDTH]) {
+//     for (int i=0;i<RENDER_HEIGHT; i++) {
+//         for (int j=0;j<RENDER_WIDTH;j++) {
+//             frame[i][j] = '-';
+//         }
+//     }
+// }
 
 int update_x(int *x, int *x_speed, int max) {
     if (*x <= 0 || *x >= max) {
         *x_speed = -(*x_speed);
-        *x = *x + *x_speed;
-        return 1;
     }
-    else {
-        *x = *x + *x_speed;
-        return 1;
-    }
+    *x = *x + *x_speed;
+    return 1;
 }
 
 int update_y(int *y, int *y_speed, int max) {
-    if (*y <= 0 || *y >= max) {
+    int oob = *y + *y_speed;
+    oob = ((oob <= 0) || (oob >= max));
+    if (oob) {
         *y_speed = -(*y_speed);
-        *y = *y + *y_speed;
-        return 1;
     }
-    else {
-        *y = *y + *y_speed;
-        return 1;
-    }
+    *y = *y + *y_speed;
+    return 1;
 }
