@@ -1,17 +1,20 @@
 #include "stopwatch.h"
 
-static clock_t start, stop;
+static clock_t start, stop;     //Start and stop are the elapsed number of ticks since the program began.
 static double cpu_time_elapsed;
 
+//grabs current tick since program began
 void start_watch() {
     start = clock();
 }
 
+//grabs current tick since program began
 void stop_watch() {
     stop = clock();
 }
 
-//
+//Calculates the total CPU time taken up.
+//If our program starts timing at tick 1000, and stops at tick 2000, we have (2000-1000) / The amount of clock cycles a second for our CPU.
 double get_cpu_time_elapsed() {
     cpu_time_elapsed = ((double)(stop - start)) / CLOCKS_PER_SEC;
     return cpu_time_elapsed;
