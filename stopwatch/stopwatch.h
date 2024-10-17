@@ -9,8 +9,8 @@
 #include <unistd.h> 
 #include <stdlib.h>
 
-void start_watch(clock_t *start);
-void stop_watch(clock_t *stop);
+void start_watch();
+void stop_watch();
 double get_cpu_time_elapsed();
 void print_cpu_time(double cpu_time);
 

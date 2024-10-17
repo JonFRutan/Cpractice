@@ -3,7 +3,28 @@
 static clock_t start, stop;
 static double cpu_time_elapsed;
 
+void start_watch() {
+    start = clock();
+}
+
+void stop_watch() {
+    stop = clock();
+}
+
+//
+double get_cpu_time_elapsed() {
+    cpu_time_elapsed = ((double)(stop - start)) / CLOCKS_PER_SEC;
+    return cpu_time_elapsed;
+}
+
+//useless function
+void print_cpu_time(double cpu_time) {
+    printf("%f seconds of CPU usage.", cpu_time);
+}
+
 //main is for testing the stopwatch, calling with an argument will count based on the provided number.
+//To compile and use main: gcc -DTEST stopwatch.c -o stopwatch.exe
+#ifdef TEST
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
         printf("Not enough arguments- provide a MAX int for testing.\n");
@@ -15,7 +36,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     printf("Running stopwatch test...\n");
-    start_watch(&start);
+    start_watch();
     unsigned int count = 0;
     for (int i=0;i<count_max;i++) {
         count++;
@@ -23,25 +44,10 @@ int main(int argc, char *argv[]) {
         fflush(stdout);                            //Flushes the programs output
     }
     printf("\n");
-    stop_watch(&stop);
+    stop_watch();
     print_cpu_time(get_cpu_time_elapsed());
     printf("\n");
+    return 0;
 }
+#endif
 
-
-void start_watch(clock_t *start) {
-    *start = clock();
-}
-
-void stop_watch(clock_t *stop) {
-    *stop = clock();
-}
-
-double get_cpu_time_elapsed() {
-    cpu_time_elapsed = ((double)(stop - start)) / CLOCKS_PER_SEC;
-    return cpu_time_elapsed;
-}
-
-void print_cpu_time(double cpu_time) {
-    printf("%f seconds of CPU usage.", cpu_time);
-}
