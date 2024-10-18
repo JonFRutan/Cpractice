@@ -50,8 +50,8 @@ int screen_main_loop(unsigned int max_frames, double *x_times, double *y_times) 
         strcpy(guy, guys[frame%4]);            //Framely updates of our object
         mvprintw(y_pos, x_pos, guy);           //Prints the object to the correct location
         getmaxyx(stdscr, y_max, x_max);        //Grabs the screen size, and sets the correct maxes.
-        x_times[frame] = update_x(&x_pos, &x_speed, x_max);     //Next x-position
         y_times[frame] = update_y(&y_pos, &y_speed, y_max);     //Next y-position
+        x_times[frame] = update_x(&x_pos, &x_speed, x_max);     //Next x-position
         refresh();
         napms(30);
     }
@@ -68,23 +68,26 @@ int screen_main_loop(unsigned int max_frames, double *x_times, double *y_times) 
 
 double update_x(int *x, int *x_speed, int max) {
     start_watch();
-    if (*x <= 0 || *x >= max) {
+    int rng = 2 * (~(*x_speed >> 15));
+    int next = *x + *x_speed;
+    if (next < 0 || next > max) {
         *x_speed = -(*x_speed);
+        next += rng;
     }
-    *x = *x + *x_speed;
+    *x = next;
     stop_watch();
     return get_cpu_time_elapsed();
 }
 
-//The timers seem to indicate that this function is slightly faster than update_x.
 double update_y(int *y, int *y_speed, int max) {
     start_watch();
-    int oob = *y + *y_speed;
-    oob = ((oob <= 0) || (oob >= max));
-    if (oob) {
+    int rng = 2 * (~(*y_speed >> 15));
+    int next = *y + *y_speed;
+    if (next < 0 || next > max) {
         *y_speed = -(*y_speed);
+        next += rng;
     }
-    *y = *y + *y_speed;
+    *y = next;
     stop_watch();
     return get_cpu_time_elapsed();
 }
