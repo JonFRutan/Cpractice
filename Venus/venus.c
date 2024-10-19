@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
 int main_loop(WINDOW *fixed_window) {
     int running = 1;
     int user_input = ERR; //'n' for no input.
-    int x_cor, y_cor = 25;
+    int x_cor = 25, y_cor = 25;
     mvprintw(y_cor, x_cor, FIGURE);
     while (running) {
         user_input = getch();
@@ -45,5 +45,5 @@ int main_loop(WINDOW *fixed_window) {
         refresh();
         napms(30);
     }
-
+    return 1;
 }
