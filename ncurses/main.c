@@ -13,21 +13,22 @@ int main (int argc, char *argv[]) {
     curs_set(FALSE);                           //Removes cursor from the window
     //start_color();
     //init_pair(1, COLOR_BLUE, COLOR_BLACK);
-    //start_watch();
+    start_watch();
     screen_main_loop(max_frames, x_times, y_times);              //Initiates main screen loop
     endwin();                                  //Ends the current window
-    //stop_watch();
-    //double time_elapsed = get_cpu_time_elapsed();
-    double total_time_difference = 0;
-    double frame_time_difference = 0;
-    for (int i=0; i<max_frames; i++) {
-        frame_time_difference = x_times[i]-y_times[i];
-        printf("X: %f  |  Y: %f  |  DIFF: %f \n", x_times[i], y_times[i], frame_time_difference);
-        total_time_difference += frame_time_difference;
-    }
-    printf("Total time difference: %f\n", total_time_difference);
-    printf("A postitive difference indicates update_y is faster, negative indicates update_x is faster.\n");
-    printf("Finished.\n");
+    stop_watch();
+    double time_elapsed = get_cpu_time_elapsed();
+    //double total_time_difference = 0;
+    //double frame_time_difference = 0;
+    //for (int i=0; i<max_frames; i++) {
+    //    frame_time_difference = x_times[i]-y_times[i];
+    //    printf("X: %f  |  Y: %f  |  DIFF: %f \n", x_times[i], y_times[i], frame_time_difference);
+    //    total_time_difference += frame_time_difference;
+    //}
+    //printf("Total time difference: %f\n", total_time_difference);
+    //printf("A postitive difference indicates update_y is faster, negative indicates update_x is faster.\n");
+    printf("Finished using %f CPU seconds.\n", time_elapsed);
+    return 0;
 }
 
 int screen_main_loop(unsigned int max_frames, double *x_times, double *y_times) {
@@ -40,18 +41,20 @@ int screen_main_loop(unsigned int max_frames, double *x_times, double *y_times) 
     char guy[2];            //Our object to be rendered
     char *guys[4];          //This is an array of our objects states it can appear as.
 
-    guys[0] = "=";
-    guys[1] = "+";
+    guys[0] = "|";
+    guys[1] = "/";
     guys[2] = "-";
-    guys[3] = "*";
+    guys[3] = "\\";
 
     for (int frame=0; frame<max_frames; frame++) {
         clear();                               //clears screen
-        strcpy(guy, guys[frame%4]);            //Framely updates of our object
+        strcpy(guy, guys[(frame%64)/16]);        //Framely updates of our object, notice every "sprite" will run for 4 frames.
+        //We can "slow" the sprite of our character by following a short formula:
+        // [i%(B^S)]/B^(S-1)  - Where i is our iteration (frame here), B is our base (4 here), and S is our "Slowdown" (4 here)
         mvprintw(y_pos, x_pos, guy);           //Prints the object to the correct location
         getmaxyx(stdscr, y_max, x_max);        //Grabs the screen size, and sets the correct maxes.
-        y_times[frame] = update_y(&y_pos, &y_speed, y_max);     //Next y-position
-        x_times[frame] = update_x(&x_pos, &x_speed, x_max);     //Next x-position
+        y_times[frame] = update_position(&y_pos, &y_speed, y_max);     //Next y-position
+        x_times[frame] = update_position(&x_pos, &x_speed, x_max);     //Next x-position
         refresh();
         napms(30);
     }
@@ -66,28 +69,17 @@ int screen_main_loop(unsigned int max_frames, double *x_times, double *y_times) 
 //     }
 // }
 
-double update_x(int *x, int *x_speed, int max) {
+//Takes an axis position and the axis speed and calculates the next position.
+//This returns a double for timing purposes.
+double update_position(int *position, int *pos_speed, int max) {
     start_watch();
-    int rng = 2 * (~(*x_speed >> 15));
-    int next = *x + *x_speed;
+    int rng = 2 * (~(*pos_speed >> 15));
+    int next = *position + *pos_speed;
     if (next < 0 || next > max) {
-        *x_speed = -(*x_speed);
+        *pos_speed = -(*pos_speed);
         next += rng;
     }
-    *x = next;
-    stop_watch();
-    return get_cpu_time_elapsed();
-}
-
-double update_y(int *y, int *y_speed, int max) {
-    start_watch();
-    int rng = 2 * (~(*y_speed >> 15));
-    int next = *y + *y_speed;
-    if (next < 0 || next > max) {
-        *y_speed = -(*y_speed);
-        next += rng;
-    }
-    *y = next;
+    *position = next;
     stop_watch();
     return get_cpu_time_elapsed();
 }
