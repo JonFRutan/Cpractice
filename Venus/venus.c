@@ -22,16 +22,17 @@ int main_loop(WINDOW *fixed_window) {
         mvprintw(y_cor, x_cor, " ");
         switch (user_input) {
             case 'w':
-                y_cor--;
+            	if (y_cor > 1) { y_cor--; }
                 break;
             case 's':
-                y_cor++;
+                if (y_cor < WINDOW_HEIGHT - 1) { y_cor++; }
                 break;
             case 'd':
-                x_cor++;
+            	if (x_cor < WINDOW_WIDTH - 1 ) { x_cor++; } 
+                //x_cor += (x_cor+1 & WINDOW_WIDTH); 
                 break;
             case 'a':
-                x_cor--;
+                if (x_cor > 0) { x_cor--; }
                 break;
             case 'q':
                 return 0;
@@ -47,3 +48,5 @@ int main_loop(WINDOW *fixed_window) {
     }
     return 1;
 }
+
+
