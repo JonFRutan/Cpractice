@@ -1,3 +1,4 @@
+//jfr
 #ifndef PIXELS_H
 #define PIXELS_H
 

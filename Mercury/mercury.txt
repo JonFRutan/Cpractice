@@ -15,13 +15,20 @@ Parsing:
 
 Execution:
 -Create a child process using fork().
--Use execvp() to run the command, display an error if it cannot be run.
+-Use execute() to run the command, display an error if it cannot be run.
 -The shell should wait for the command to be executed with wait().
 
 Built-in commands:
 -Change directory with chdir()
 -Call exit() to terminate shell.
 ------------------------------------------------------------------------
+
+###
+Mercury already needs a redesign, I am uphappy with the way calls are set up to be handled.
+"clean_input" doesn't need to be it's own function.
+I already am annoyed with the whole enum sys feature, that will be changed.
+I'd like to simplify the whole concept thus far.
+###
 
 Issues:
 
